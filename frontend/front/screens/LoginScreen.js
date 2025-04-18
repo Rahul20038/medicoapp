@@ -15,7 +15,16 @@ export default function LoginScreen({ navigation, setIsLoggedIn }) {
   
       setIsLoggedIn(true); // This will trigger the navigator to show Home
     } catch (err) {
-      console.log('Login error:', err);
+      console.log('Login error:', err.message);
+      console.log('Full error object:', err);
+      if (err.response) {
+        console.log('Server responded with:', err.response.data);
+      } else if (err.request) {
+        console.log('Request made but no response received:', err.request);
+      } else {
+        console.log('Error setting up the request:', err.message);
+      }
+    
       Alert.alert('Login failed', 'Check your credentials');
     }
   };
