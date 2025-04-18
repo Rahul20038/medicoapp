@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { View, TextInput, Button, StyleSheet, Text, Alert, TouchableOpacity } from 'react-native';
 import { FontAwesome } from '@expo/vector-icons'; // You can use icons from FontAwesome or any other icon library
 import API from '../config/api';
@@ -12,6 +13,10 @@ export default function LoginScreen({ navigation, setIsLoggedIn }) {
       const res = await API.post('/token/', { username, password });
       const token = res.data.access;
       API.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+
+    await AsyncStorage.setItem('access_token', token);
+    await AsyncStorage.setItem('user_name', username); // if your API gives name separately, use that
+    await AsyncStorage.setItem('user_email', username+'@gmail.com');
   
       setIsLoggedIn(true); // This will trigger the navigator to show Home
     } catch (err) {

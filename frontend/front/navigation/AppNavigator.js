@@ -12,7 +12,7 @@ import ProfileScreen from '../screens/ProfileScreen';
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
 
-function HomeTabs() {
+function HomeTabs({ setIsLoggedIn }) {
   return (
     <Tab.Navigator
       initialRouteName="HomeMain"
@@ -32,8 +32,9 @@ function HomeTabs() {
     >
       <Tab.Screen name="HomeMain" component={HomeScreen} />
       <Tab.Screen name="Appointments" component={AppointmentScreen} />
-      <Tab.Screen name="Profile" component={ProfileScreen} />
-
+      <Tab.Screen name="Profile">
+        {props => <ProfileScreen {...props} setIsLoggedIn={setIsLoggedIn} />}
+      </Tab.Screen>
     </Tab.Navigator>
   );
 }
@@ -54,9 +55,12 @@ export default function AppNavigator() {
         {/* <Stack.Screen name="HomeMain">
           {props => <HomeScreen {...props} setIsLoggedIn={setIsLoggedIn} />}
         </Stack.Screen> */}
-        <Stack.Screen name="HomeTabs" component={HomeTabs} />
+        <Stack.Screen name="HomeTabs">
+          {props => <HomeTabs {...props} setIsLoggedIn={setIsLoggedIn} />}
+        </Stack.Screen>
         <Stack.Screen name="DoctorList" component={DoctorListScreen} />
         <Stack.Screen name="DoctorDetail" component={DoctorDetailScreen} />
+        <Stack.Screen name="Appointment" component={AppointmentScreen} />
         </>
       )}
     </Stack.Navigator>
