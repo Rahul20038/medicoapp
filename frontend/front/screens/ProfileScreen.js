@@ -1,20 +1,20 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, Button, Image, TouchableOpacity } from 'react-native';
+import { View, StyleSheet, ScrollView } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { Avatar, Text, Button, Card, ListItem, Icon } from 'react-native-elements';
 
-const ProfileScreen = ({ navigation, setIsLoggedIn }) => {
+const ProfileScreen = ({ setIsLoggedIn }) => {
   const [userDetails, setUserDetails] = useState({
     name: '',
     email: '',
-    profileImage: '', // This will hold the user's profile image URL
+    profileImage: '',
   });
 
-  // Load user info from AsyncStorage
   useEffect(() => {
     const loadUserInfo = async () => {
       const name = await AsyncStorage.getItem('user_name');
       const email = await AsyncStorage.getItem('user_email');
-      const profileImage = await AsyncStorage.getItem('user_profile_image'); // Assuming you store the profile image URL
+      const profileImage = await AsyncStorage.getItem('user_profile_image');
       setUserDetails({ name, email, profileImage });
     };
     loadUserInfo();
@@ -22,7 +22,7 @@ const ProfileScreen = ({ navigation, setIsLoggedIn }) => {
 
   const handleLogout = async () => {
     try {
-      await AsyncStorage.clear(); // Or selectively remove items
+      await AsyncStorage.clear();
       setIsLoggedIn(false);
     } catch (error) {
       console.error('Logout failed:', error);
@@ -30,69 +30,89 @@ const ProfileScreen = ({ navigation, setIsLoggedIn }) => {
   };
 
   return (
-    <View style={styles.container}>
+    <ScrollView style={styles.container}>
       <View style={styles.profileHeader}>
-        <Image
-          style={styles.profileImage}
+        <Avatar
+          rounded
+          size="xlarge"
           source={{
-            uri: userDetails.profileImage || 'https://www.w3schools.com/howto/img_avatar.png', // Fallback to default image
+            uri: userDetails.profileImage || 'https://www.w3schools.com/howto/img_avatar.png',
           }}
         />
         <Text style={styles.name}>{userDetails.name}</Text>
         <Text style={styles.email}>{userDetails.email}</Text>
       </View>
 
-      <View style={styles.settingsContainer}>
-        <TouchableOpacity style={styles.settingItem}>
-          <Text style={styles.settingText}>Change Password</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.settingItem}>
-          <Text style={styles.settingText}>Edit Profile</Text>
-        </TouchableOpacity>
-      </View>
+      <Card containerStyle={styles.card}>
+        <Card.Title>Account Settings</Card.Title>
+        <Card.Divider />
 
-      <Button title="Logout" onPress={handleLogout} color="#ff6347" />
-    </View>
+        <ListItem bottomDivider onPress={() => {}}>
+          <Icon name="edit" type="feather" />
+          <ListItem.Content>
+            <ListItem.Title>Edit Profile</ListItem.Title>
+          </ListItem.Content>
+        </ListItem>
+
+        <ListItem bottomDivider onPress={() => {}}>
+          <Icon name="lock" type="feather" />
+          <ListItem.Content>
+            <ListItem.Title>Change Password</ListItem.Title>
+          </ListItem.Content>
+        </ListItem>
+
+        <ListItem bottomDivider onPress={() => {}}>
+          <Icon name="bell" type="feather" />
+          <ListItem.Content>
+            <ListItem.Title>Notification Preferences</ListItem.Title>
+          </ListItem.Content>
+        </ListItem>
+
+        <ListItem bottomDivider onPress={() => {}}>
+          <Icon name="help-circle" type="feather" />
+          <ListItem.Content>
+            <ListItem.Title>Help & Support</ListItem.Title>
+          </ListItem.Content>
+        </ListItem>
+      </Card>
+
+      <Button
+        title="Logout"
+        onPress={handleLogout}
+        buttonStyle={styles.logoutButton}
+        icon={<Icon name="log-out" type="feather" color="white" />}
+      />
+    </ScrollView>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 20,
-    backgroundColor: '#f8f9fa',
+    backgroundColor: '#f2f2f2',
   },
   profileHeader: {
     alignItems: 'center',
-    marginBottom: 30,
-  },
-  profileImage: {
-    width: 100,
-    height: 100,
-    borderRadius: 50,
-    marginBottom: 10,
+    padding: 20,
+    backgroundColor: '#fff',
   },
   name: {
-    fontSize: 22,
+    fontSize: 24,
     fontWeight: '600',
-    color: '#333',
+    marginTop: 10,
   },
   email: {
     fontSize: 16,
-    color: '#555',
-    marginBottom: 20,
+    color: '#888',
+    marginTop: 4,
   },
-  settingsContainer: {
-    marginBottom: 30,
+  card: {
+    borderRadius: 10,
   },
-  settingItem: {
-    padding: 10,
-    borderBottomWidth: 1,
-    borderColor: '#ddd',
-  },
-  settingText: {
-    fontSize: 18,
-    color: '#333',
+  logoutButton: {
+    backgroundColor: '#e74c3c',
+    margin: 20,
+    borderRadius: 8,
   },
 });
 

@@ -1,38 +1,60 @@
-// screens/DoctorDetailScreen.js
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, Image, Button, TextInput } from 'react-native';
+import { View, Text, StyleSheet, Image, Button, TouchableOpacity, Linking } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import DateTimePicker from '@react-native-community/datetimepicker';
 
 const DoctorDetailScreen = ({ route, navigation }) => {
   const { doctor } = route.params;
-  const [appointmentTime, setAppointmentTime] = useState('');
+  const [selectedDate, setSelectedDate] = useState(new Date());
+  const [showPicker, setShowPicker] = useState(false);
+  const [selectedSlot, setSelectedSlot] = useState('');
+
+  const slots = [
+    '10:00 AM', '11:00 AM', '12:00 PM',
+    '2:00 PM', '3:00 PM', '4:00 PM', '5:00 PM'
+  ];
+
+  const onChange = (event, date) => {
+    setShowPicker(false);
+    if (date) setSelectedDate(date);
+  };
 
   const handleBookAppointment = async () => {
-    if (appointmentTime) {
-      const newAppointment = {
-        doctorName: doctor.name,
-        doctorSpecialty: doctor.description,
-        doctorImage: doctor.image,
-        appointmentTime: appointmentTime,
-      };
-  
-      try {
-        const stored = await AsyncStorage.getItem('appointments');
-        const appointments = stored ? JSON.parse(stored) : [];
-  
-        const updatedAppointments = [...appointments, newAppointment];
-        await AsyncStorage.setItem('appointments', JSON.stringify(updatedAppointments));
-  
-        console.log('Saved appointment:', newAppointment);
-        navigation.navigate('Appointment'); // Navigate without params now
-      } catch (error) {
-        console.error('Failed to save appointment:', error);
-      }
-    } else {
-      alert('Please select an appointment time!');
+    if (!selectedSlot) {
+      alert('Please select a time slot!');
+      return;
+    }
+
+    const formattedDate = selectedDate.toLocaleDateString();
+    const newAppointment = {
+      doctorName: doctor.name,
+      doctorSpecialty: doctor.description,
+      doctorImage: doctor.image,
+      appointmentDate: formattedDate,
+      appointmentTime: selectedSlot,
+    };
+
+    try {
+      const stored = await AsyncStorage.getItem('appointments');
+      const appointments = stored ? JSON.parse(stored) : [];
+
+      const updatedAppointments = [...appointments, newAppointment];
+      await AsyncStorage.setItem('appointments', JSON.stringify(updatedAppointments));
+
+      console.log('Saved appointment:', newAppointment);
+      navigation.navigate('Appointment');
+    } catch (error) {
+      console.error('Failed to save appointment:', error);
     }
   };
-  
+
+  const handleCallDoctor = () => {
+    if (doctor.phone) {
+      Linking.openURL(`tel:${doctor.phone}`);
+    } else {
+      alert('Phone number not available');
+    }
+  };
 
   return (
     <View style={styles.container}>
@@ -41,14 +63,38 @@ const DoctorDetailScreen = ({ route, navigation }) => {
       <Text style={styles.specialty}>Specialty: {doctor.description}</Text>
       <Text style={styles.rating}>Rating: {doctor.rating} / 5.0</Text>
 
-      <TextInput
-        style={styles.input}
-        placeholder="Enter appointment time"
-        value={appointmentTime}
-        onChangeText={setAppointmentTime}
-      />
+      <TouchableOpacity onPress={() => setShowPicker(true)} style={styles.dateButton}>
+        <Text>Select Date: {selectedDate.toLocaleDateString()}</Text>
+      </TouchableOpacity>
+
+      {showPicker && (
+        <DateTimePicker
+          value={selectedDate}
+          mode="date"
+          display="default"
+          onChange={onChange}
+        />
+      )}
+
+      <Text style={styles.slotLabel}>Select a time slot:</Text>
+      <View style={styles.slotContainer}>
+        {slots.map((slot) => (
+          <TouchableOpacity
+            key={slot}
+            style={[styles.slot, selectedSlot === slot && styles.selectedSlot]}
+            onPress={() => setSelectedSlot(slot)}
+          >
+            <Text style={styles.slotText}>{slot}</Text>
+          </TouchableOpacity>
+        ))}
+      </View>
 
       <Button title="Book Appointment" onPress={handleBookAppointment} />
+
+      {/* 📞 Call Doctor Button */}
+      <TouchableOpacity onPress={handleCallDoctor} style={styles.callButton}>
+        <Text style={styles.callText}>📞 Call Doctor</Text>
+      </TouchableOpacity>
     </View>
   );
 };
@@ -83,13 +129,46 @@ const styles = StyleSheet.create({
     color: '#f1c40f',
     marginBottom: 20,
   },
-  input: {
-    width: '80%',
+  dateButton: {
     padding: 10,
-    marginBottom: 20,
     backgroundColor: '#fff',
     borderRadius: 8,
     borderWidth: 1,
     borderColor: '#ccc',
+    marginBottom: 15,
+  },
+  slotLabel: {
+    fontSize: 16,
+    marginVertical: 10,
+    fontWeight: 'bold',
+  },
+  slotContainer: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    justifyContent: 'center',
+    marginBottom: 20,
+  },
+  slot: {
+    padding: 10,
+    borderRadius: 20,
+    backgroundColor: '#e0e0e0',
+    margin: 5,
+  },
+  selectedSlot: {
+    backgroundColor: '#4CAF50',
+  },
+  slotText: {
+    color: '#000',
+  },
+  callButton: {
+    marginTop: 20,
+    padding: 12,
+    backgroundColor: '#3498db',
+    borderRadius: 10,
+  },
+  callText: {
+    color: '#fff',
+    fontSize: 16,
+    fontWeight: 'bold',
   },
 });

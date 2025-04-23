@@ -18,6 +18,7 @@ const doctorsData = {
       rating: 4.9,
       description: 'Cardiologist with 10+ years experience in heart health.',
       image: 'https://randomuser.me/api/portraits/women/44.jpg',
+      phone: "+919876543210"
     },
     {
       id: '2',
@@ -25,6 +26,7 @@ const doctorsData = {
       rating: 4.7,
       description: 'Expert in heart surgery and cardiovascular diseases.',
       image: 'https://randomuser.me/api/portraits/men/45.jpg',
+      phone: "+919876543210"
     },
   ],
   Neurology: [
@@ -34,6 +36,7 @@ const doctorsData = {
       rating: 4.8,
       description: 'Specialist in treating brain and spine disorders.',
       image: 'https://randomuser.me/api/portraits/women/55.jpg',
+      phone: "+919876543210"
     },
   ],
   General: [
@@ -43,6 +46,7 @@ const doctorsData = {
       rating: 4.5,
       description: 'General physician treating common illnesses and checkups.',
       image: 'https://randomuser.me/api/portraits/men/66.jpg',
+      phone: "+919876543210"
     },
   ],
   Pediatrics: [
@@ -52,6 +56,7 @@ const doctorsData = {
       rating: 4.6,
       description: 'Pediatrician caring for infants and children.',
       image: 'https://randomuser.me/api/portraits/women/33.jpg',
+      phone: "+919876543210"
     },
   ],
   Orthopedics: [
@@ -61,6 +66,7 @@ const doctorsData = {
       rating: 4.8,
       description: 'Expert in bone and joint issues.',
       image: 'https://randomuser.me/api/portraits/men/21.jpg',
+      phone: "+919876543210"
     },
   ],
   Dermatology: [
@@ -70,6 +76,7 @@ const doctorsData = {
       rating: 4.9,
       description: 'Dermatologist specializing in skin care and treatment.',
       image: 'https://randomuser.me/api/portraits/women/61.jpg',
+      phone: "+919876543210"
     },
   ],
 };
