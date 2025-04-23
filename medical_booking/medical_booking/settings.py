@@ -26,7 +26,7 @@ SECRET_KEY = 'django-insecure-$8uof@_msa3giami18nz8aj0t%j#b-l&e_ii!m8p&-k#(jv+yr
 DEBUG = True
 
 ALLOWED_HOSTS = [
-    '192.168.0.101',  # Your computer's local IP
+    '192.168.1.35',  # Your computer's local IP
     'localhost',
     '127.0.0.1'
 ]
@@ -66,8 +66,8 @@ SIMPLE_JWT = {
 CORS_ALLOW_ALL_ORIGINS = True
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:19000",
-    "http://192.168.0.101:19000",
-    "http://192.168.0.101:8000",
+    "http://192.168.1.35:19000",
+    "http://192.168.1.35:8000",
 ]
 
 CORS_ALLOW_CREDENTIALS = True
